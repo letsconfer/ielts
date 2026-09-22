@@ -1,9 +1,9 @@
 const restrictionMessage = "This action is restricted, please contact Vikramjit for more details.";
 let isInternalAction = false;
 
-// Helper to get master config
+// Helper to get master config from window.CV_MASTER_CONFIG
 function getConfig() {
-    return window.MASTER_CONFIG || {};
+    return window.CV_MASTER_CONFIG || window.MASTER_CONFIG || {};
 }
 
 // Inject Indentation and Layout Styles
@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function() {
             document.documentElement.setAttribute("data-theme", "light");
         }
 
-        // 0. Home Icon Button (Loads from config.homePage)
+        // 0. Home Icon Button (Loads full URL from config.homePage)
         const homeUrl = config.homePage || 'language.html';
         const homeLink = document.createElement('a');
         homeLink.href = homeUrl;
@@ -170,8 +170,8 @@ document.addEventListener("DOMContentLoaded", function() {
             updateThemeButton();
         }
         
-        // 2. Download PDF Button (Honors showDownloadIcon: false correctly)
-        if (config.showDownloadIcon !== false) {
+        // 2. Download PDF Button (Strictly hidden when showDownloadIcon is false)
+        if (config.showDownloadIcon === true) {
             const downloadBtn = document.createElement('button');
             downloadBtn.id = 'download-pdf-btn';
             baseButtonStyle(downloadBtn);
