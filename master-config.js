@@ -15,5 +15,4 @@ window.CV_MASTER_CONFIG = {
     profileImage: "me.jpeg"     // Default profile image file
 
     // 4. Fixed homepage to language.html)
-    homePage: "https://letsconfer.github.io/learn/Language.html" // Points back to the main hub page under the vocab branch
-};
+    homePage: "./language.html"   // or "../language.html" depending on your folder structure}
