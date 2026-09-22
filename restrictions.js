@@ -232,30 +232,5 @@ document.addEventListener('keydown', function(e) {
         e.preventDefault();
         alert(restrictionMessage);
     }
-
-// ==========================================
-// FORCE ALL LINKS & SCRIPTS TO OPEN IN THE SAME TAB
-// ==========================================
-document.addEventListener('click', function(e) 
-{
-    const anchor = e.target.closest('a');
-    if (anchor) {
-        // Remove target="_blank" dynamically if present
-        if (anchor.hasAttribute('target')) {
-            anchor.removeAttribute('target');
-        }
-    }
-}, true);
-
-// Intercept any JavaScript window.open calls and force same-page navigation
-if (typeof window !== 'undefined') 
-{
-    const originalOpen = window.open;
-    window.open = function(url, target, features) {
-        if (url) {
-            window.location.href = url;
-        }
-        return null;
-}
     
 });
