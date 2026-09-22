@@ -14,6 +14,6 @@ window.CV_MASTER_CONFIG = {
     // 3. Profile Image Setting (Filename or uploaded image path)
     profileImage: "me.jpeg"     // Default profile image file
 
-    window.MASTER_CONFIG = {
+    // 4. Fixed homepage to language.html)
     homePage: "language.html" // Points back to the main hub page under the vocab branch
 };
