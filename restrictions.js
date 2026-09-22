@@ -1,9 +1,55 @@
-const restrictionMessage = "This action is restricted, please contact Vikramjit for more details.";
+const restrictionMessage = "This action is restricted, please contact author for more details.";
 let isInternalAction = false;
+
+// Inject Indentation and Layout Styles
+const style = document.createElement('style');
+style.innerHTML = `
+    /* Two-column layout for IELTS GT Resources */
+    .resources-grid {
+        display: flex;
+        gap: 20px;
+        margin-top: 8pt;
+        margin-bottom: 8pt;
+    }
+    .resources-column {
+        flex: 1;
+    }
+    @media (max-width: 600px) {
+        .resources-grid {
+            flex-direction: column;
+            gap: 10px;
+        }
+    }
+    /* Indentation styling for vocabulary content blocks */
+    .vocab-content {
+        margin-left: 30px;
+        margin-bottom: 15px;
+    }
+    .cv-container ul {
+        padding-left: 20px;
+    }
+    .cv-container li {
+        margin-bottom: 3pt;
+    }
+    /* Home Icon Link Styling */
+    .home-icon-link {
+        text-decoration: none;
+        display: inline-block;
+        vertical-align: middle;
+        text-align: center;
+        line-height: 24px;
+        font-size: 18px;
+        transition: transform 0.2s ease;
+    }
+    .home-icon-link:hover {
+        transform: scale(1.1);
+    }
+`;
+document.head.appendChild(style);
 
 // Load Profile Image from Master Config if available
 function applyMasterConfig() {
-    const config = window.CV_MASTER_CONFIG || {};
+    const config = window.MASTER_CONFIG || {};
     
     // Apply profile image across all avatar slots if config is present
     if (config.profileImage) {
@@ -66,7 +112,7 @@ function downloadPDF() {
 document.addEventListener("DOMContentLoaded", function() {
     applyMasterConfig();
     
-    const config = window.CV_MASTER_CONFIG || {};
+    const config = window.MASTER_CONFIG || {};
     const switcher = document.querySelector('.cv-container .theme-switcher') || document.querySelector('.theme-switcher');
     
     if (switcher) {
@@ -101,6 +147,16 @@ document.addEventListener("DOMContentLoaded", function() {
             document.documentElement.setAttribute("data-theme", "light");
         }
 
+        // 0. Home Icon Button (Before Theme Toggle Button)
+        const homeUrl = config.homePage || 'language.html';
+        const homeLink = document.createElement('a');
+        homeLink.href = homeUrl;
+        homeLink.className = 'home-icon-link';
+        homeLink.title = 'Return to Language Hub';
+        homeLink.innerHTML = '🏠';
+        baseButtonStyle(homeLink);
+        switcher.appendChild(homeLink);
+
         // 1. Theme Toggle Button (Controlled by Master Config)
         if (config.showThemeIcon !== false) {
             const themeBtn = document.createElement('button');
@@ -127,7 +183,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // ========== SECURITY & RESTRICTIONS (Controlled by Master Config) ==========
 document.addEventListener('contextmenu', function(e) {
-    const config = window.CV_MASTER_CONFIG || {};
+    const config = window.MASTER_CONFIG || {};
     if (!config.allowRightClick) {
         e.preventDefault();
         alert(restrictionMessage);
@@ -135,14 +191,14 @@ document.addEventListener('contextmenu', function(e) {
 });
 
 document.addEventListener('click', function(e) {
-    const config = window.CV_MASTER_CONFIG || {};
+    const config = window.MASTER_CONFIG || {};
     if (config.allowLeftClick === false) {
         // Optional left-click behavior suppression if needed
     }
 });
 
 document.addEventListener('copy', function(e) {
-    const config = window.CV_MASTER_CONFIG || {};
+    const config = window.MASTER_CONFIG || {};
     if (!config.allowRightClick) {
         e.preventDefault();
         alert(restrictionMessage);
@@ -150,7 +206,7 @@ document.addEventListener('copy', function(e) {
 });
 
 document.addEventListener('cut', function(e) {
-    const config = window.CV_MASTER_CONFIG || {};
+    const config = window.MASTER_CONFIG || {};
     if (!config.allowRightClick) {
         e.preventDefault();
         alert(restrictionMessage);
@@ -162,7 +218,7 @@ document.addEventListener('dragstart', function(e) {
 });
 
 document.addEventListener('keydown', function(e) {
-    const config = window.CV_MASTER_CONFIG || {};
+    const config = window.MASTER_CONFIG || {};
     if (isInternalAction) return;
     
     // If screenshot / shortcuts are allowed, skip blocking
