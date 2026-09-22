@@ -1,9 +1,9 @@
 const restrictionMessage = "This action is restricted, please contact Vikramjit for more details.";
 let isInternalAction = false;
 
-// Helper to check both naming conventions for master config
+// Helper to get master config
 function getConfig() {
-    return window.MASTER_CONFIG || window.CV_MASTER_CONFIG || {};
+    return window.MASTER_CONFIG || {};
 }
 
 // Inject Indentation and Layout Styles
