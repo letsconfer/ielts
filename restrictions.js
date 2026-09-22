@@ -1,5 +1,10 @@
-const restrictionMessage = "This action is restricted, please contact author for more details.";
+const restrictionMessage = "This action is restricted, please contact Vikramjit for more details.";
 let isInternalAction = false;
+
+// Helper to check both naming conventions for master config
+function getConfig() {
+    return window.MASTER_CONFIG || window.CV_MASTER_CONFIG || {};
+}
 
 // Inject Indentation and Layout Styles
 const style = document.createElement('style');
@@ -47,11 +52,9 @@ style.innerHTML = `
 `;
 document.head.appendChild(style);
 
-// Load Profile Image from Master Config if available
 function applyMasterConfig() {
-    const config = window.MASTER_CONFIG || {};
+    const config = getConfig();
     
-    // Apply profile image across all avatar slots if config is present
     if (config.profileImage) {
         const profileImgs = document.querySelectorAll('.profile-img');
         profileImgs.forEach(img => {
@@ -59,7 +62,6 @@ function applyMasterConfig() {
         });
     }
 
-    // Apply left-click / selection restriction
     if (config.allowLeftClick === false) {
         document.body.style.userSelect = 'none';
         document.body.style.webkitUserSelect = 'none';
@@ -112,7 +114,7 @@ function downloadPDF() {
 document.addEventListener("DOMContentLoaded", function() {
     applyMasterConfig();
     
-    const config = window.MASTER_CONFIG || {};
+    const config = getConfig();
     const switcher = document.querySelector('.cv-container .theme-switcher') || document.querySelector('.theme-switcher');
     
     if (switcher) {
@@ -147,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function() {
             document.documentElement.setAttribute("data-theme", "light");
         }
 
-        // 0. Home Icon Button (Before Theme Toggle Button)
+        // 0. Home Icon Button (Loads from config.homePage)
         const homeUrl = config.homePage || 'language.html';
         const homeLink = document.createElement('a');
         homeLink.href = homeUrl;
@@ -157,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function() {
         baseButtonStyle(homeLink);
         switcher.appendChild(homeLink);
 
-        // 1. Theme Toggle Button (Controlled by Master Config)
+        // 1. Theme Toggle Button
         if (config.showThemeIcon !== false) {
             const themeBtn = document.createElement('button');
             themeBtn.id = 'theme-toggle-btn';
@@ -168,7 +170,7 @@ document.addEventListener("DOMContentLoaded", function() {
             updateThemeButton();
         }
         
-        // 2. Download PDF Button (Controlled by Master Config)
+        // 2. Download PDF Button (Honors showDownloadIcon: false correctly)
         if (config.showDownloadIcon !== false) {
             const downloadBtn = document.createElement('button');
             downloadBtn.id = 'download-pdf-btn';
@@ -181,24 +183,17 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-// ========== SECURITY & RESTRICTIONS (Controlled by Master Config) ==========
+// ========== SECURITY & RESTRICTIONS ==========
 document.addEventListener('contextmenu', function(e) {
-    const config = window.MASTER_CONFIG || {};
+    const config = getConfig();
     if (!config.allowRightClick) {
         e.preventDefault();
         alert(restrictionMessage);
     }
 });
 
-document.addEventListener('click', function(e) {
-    const config = window.MASTER_CONFIG || {};
-    if (config.allowLeftClick === false) {
-        // Optional left-click behavior suppression if needed
-    }
-});
-
 document.addEventListener('copy', function(e) {
-    const config = window.MASTER_CONFIG || {};
+    const config = getConfig();
     if (!config.allowRightClick) {
         e.preventDefault();
         alert(restrictionMessage);
@@ -206,7 +201,7 @@ document.addEventListener('copy', function(e) {
 });
 
 document.addEventListener('cut', function(e) {
-    const config = window.MASTER_CONFIG || {};
+    const config = getConfig();
     if (!config.allowRightClick) {
         e.preventDefault();
         alert(restrictionMessage);
@@ -218,26 +213,21 @@ document.addEventListener('dragstart', function(e) {
 });
 
 document.addEventListener('keydown', function(e) {
-    const config = window.MASTER_CONFIG || {};
+    const config = getConfig();
     if (isInternalAction) return;
-    
-    // If screenshot / shortcuts are allowed, skip blocking
     if (config.allowScreenshot) return;
 
-    // Block Ctrl+P (Print), Ctrl+S (Save), Ctrl+U (View Source)
     if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.key === 's' || e.key === 'u' || e.key === 'P' || e.key === 'S' || e.key === 'U')) {
         e.preventDefault();
         alert(restrictionMessage);
     }
     
-    // Block PrintScreen
     if (e.key === 'PrintScreen' || e.keyCode === 44) {
         e.preventDefault();
         navigator.clipboard.writeText('');
         alert(restrictionMessage);
     }
 
-    // Block F12 (DevTools) and Ctrl+Shift+I/J/C
     if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C'))) {
         e.preventDefault();
         alert(restrictionMessage);
